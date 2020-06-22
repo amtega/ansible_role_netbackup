@@ -1,0 +1,14 @@
+---
+# Artifacts download tasks
+
+- name: Download netbackup install artifacts
+  include_role:
+    name: amtega.artifact
+  vars:
+    artifact_overrides:
+      dest: "{{ netbackup_download_dir }}"
+      state: present
+    artifact_list: >-
+      {{ netbackup_artifact_list
+         | map("combine", artifact_overrides)
+         | list }}

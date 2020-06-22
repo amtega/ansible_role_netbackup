@@ -1,2 +1,5 @@
 ---
 # Role variables
+
+netbackup_install_dir: /usr/openv
+netbackup_autoconf_file: /tmp/NBInstallAnswer.conf

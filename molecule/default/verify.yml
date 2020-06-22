@@ -4,4 +4,11 @@
   hosts: molecule_hosts
   gather_facts: no
   tasks:
-    - debug: msg="Verify to be done"
+    - name: Check netbackup artifacts download directory
+      stat:
+        path: "{{ netbackup_download_dir}}"
+      register: check_download_dir_result
+
+    - name: Assert that netbackup artifacts download directory was cleaned
+      assert:
+        that: not check_download_dir_result.stat.exists

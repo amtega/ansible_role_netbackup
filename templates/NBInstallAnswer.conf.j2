@@ -1,0 +1,9 @@
+SERVER={{ netbackup_server }}
+{% for media_server in netbackup_media_servers %}
+MEDIA_SERVER={{ media_server }}
+{% endfor %}
+CLIENT_NAME={{ netbackup_client_name }}
+CA_CERTIFICATE_FINGERPRINT={{ netbackup_certificate_fingerprint }}
+{% if netbackup_authorization_token is defined %}
+AUTHORIZATION_TOKEN={{ netbackup_authorization_token }}
+{% endif %}

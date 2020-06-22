@@ -1,0 +1,41 @@
+---
+# Role uninstall Tasks
+
+- block:
+    - name: Check netbackup install directory
+      stat:
+        path: "{{ netbackup_install_dir }}"
+      register: netbackup_check_install_dir_result
+
+    - when:
+        - netbackup_check_install_dir_result.stat.exists
+        - netbackup_unregister
+      block:
+        - name: Remove netbackup log
+          command: >-
+            {{ netbackup_install_dir }}/netbackup/bin/vxlogcfg -r -p 51216
+
+        - name: Unregister netbackup
+          command: >-
+            {{ netbackup_install_dir }}/netbackup/bin/nblu_registration -r
+
+    # Order is important
+
+    - name: Uninstall netbackup packages
+      yum:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - VRTSnbcfg
+        - VRTSnbjava
+        - VRTSnbjre
+        - VRTSnbclt
+        - VRTSpbx
+        - VRTSnbpck
+
+    - name: Remove netbackup install directory
+      file:
+        path: "{{ netbackup_install_dir }}"
+        state: absent
+  tags:
+    - role::netbackup::uninstall

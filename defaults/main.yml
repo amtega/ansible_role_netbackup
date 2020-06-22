@@ -1,2 +1,74 @@
 ---
 # Role default lower priority variables
+
+# Indicate netbackup status. Can be present or absent
+
+netbackup_state: absent
+
+# Netbackup server
+
+netbackup_server:
+
+# List with netbackup media servers
+
+netbackup_media_servers: []
+
+# Netbackup client hostname
+
+netbackup_client_name: "{{ inventory_hostname }}"
+
+# Netbackup server certificate fingerprint
+
+netbackup_certificate_fingerprint:
+
+# Netbackup authorization token
+
+#netbackup_authorization_token:
+
+# Indicate if client must be unregistered from server during uninstall
+
+netbackup_unregister: no
+
+# Directory where to dowload the RPM artifacts required for installing netbackup
+
+netbackup_download_dir: /tmp/netbackup_rpms
+
+# Install RPM artifacts. This option is mostly used for testing purposes, and
+# usually it must be set to yes
+
+netbackup_install_rpms: yes
+
+# List with with the artifacts required for installing netbackup
+#
+# Take a look to `amtega.artifact` role documentation to known about supported
+# types of artifacts, their specific settings and how to configure a proxy if
+# necessary
+
+netbackup_artifact_list:
+  - id: netbackup_vrtsnbpck
+    path: /netbackup
+    file: VRTSnbpck.rpm
+
+  - id: netbackup_vrtspbx
+    path: /netbackup
+    file: VRTSpbx.rpm
+
+  - id: netbackup_vrtsnbclt
+    path: /netbackup
+    file: VRTSnbclt.rpm
+
+  - id: netbackup_vrtsnbjre
+    path: /netbackup
+    file: VRTSnbjre.rpm
+
+  - id: netbackup_vrtsnbjava
+    path: /netbackup
+    file: VRTSnbjava.rpm
+
+  - id: netbackup_vrtspddea
+    path: /netbackup
+    file: VRTSpddea.rpm
+
+  - id: netbackup_vrtsnbcfg
+    path: /netbackup
+    file: VRTSnbcfg.rpm

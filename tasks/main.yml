@@ -1,2 +1,17 @@
 ---
 # Role tasks
+
+- block:
+    - include_tasks: install.yml
+      when: netbackup_state == "present"
+      tags:
+        - role::netbackup
+        - role::netbackup::install
+
+    - include_tasks: uninstall.yml
+      when: netbackup_state == "absent"
+      tags:
+        - role::netbackup
+        - role::netbackup::uninstall
+  tags:
+    - role::netbackup

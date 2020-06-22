@@ -1,0 +1,64 @@
+---
+# Role install tasks
+
+- block:
+    - name: Check netbackup install directory
+      stat:
+        path: "{{ netbackup_install_dir }}"
+      register: netbackup_check_install_dir_result
+
+    - when: not netbackup_check_install_dir_result.stat.exists
+      block:
+        - name: Create installation answer file
+          template:
+            src:  NBInstallAnswer.conf.j2
+            dest: /tmp/NBInstallAnswer.conf
+            owner: root
+            group: root
+            mode: 600
+
+        - name: Setup netbackup download directory
+          file:
+            path: "{{ netbackup_download_dir }}"
+            state: directory
+
+        - include_tasks: artifacts.yml
+          when: netbackup_artifact_list is defined
+
+        - when:
+            - netbackup_artifact_list is defined
+            - netbackup_install_rpms | bool
+          block:
+            # Order is important
+
+            - name: Install netbackup VRTSnbpck package
+              yum:
+                name: "{{ netbackup_download_dir }}/VRTSnbpck.rpm"
+                disable_gpg_check: yes
+                state: present
+              register: read_netbackup_VRTSnbpck_install_result
+
+            - name: Install netbackup additional packages
+              yum:
+                name: "{{ item }}"
+                disable_gpg_check: yes
+                state: present
+              loop:
+                - "{{ netbackup_download_dir }}/VRTSpbx.rpm"
+                - "{{ netbackup_download_dir }}/VRTSnbclt.rpm"
+                - "{{ netbackup_download_dir }}/VRTSnbjre.rpm"
+                - "{{ netbackup_download_dir }}/VRTSnbjava.rpm"
+                - "{{ netbackup_download_dir }}/VRTSpddea.rpm"
+                - "{{ netbackup_download_dir }}/VRTSnbcfg.rpm"
+
+        - name: Remove installation answer file
+          file:
+            path: /tmp/NBInstallAnswer.conf
+            state: absent
+
+        - name: Remove downloaded artifacts
+          file:
+            path: "{{ netbackup_download_dir }}"
+            state: absent
+  tags:
+    - role::netbackup::install

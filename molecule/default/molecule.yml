@@ -26,33 +26,38 @@ lint: |
   yamllint .
   ansible-lint
   flake8
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - cleanup
+    - destroy
 platforms:
-  - name: "centos6-${INSTANCE_UUID:-1}"
-    image: centos:6
-    groups:
-      - molecule_hosts
-      - molecule_hosts_centos
-      - molecule_hosts_centos_6
   - name: "centos7-${INSTANCE_UUID:-1}"
     image: centos:7
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_7
-  - name: "fedora29-${INSTANCE_UUID:-1}"
-    image: fedora:29
-    groups:
-      - molecule_hosts
-      - molecule_hosts_fedora
-      - molecule_hosts_fedora_29
-  - name: "fedora30-${INSTANCE_UUID:-1}"
-    image: fedora:30
-    groups:
-      - molecule_hosts
-      - molecule_hosts_fedora
-      - molecule_hosts_fedora_30
 provisioner:
   name: ansible
+  ansible_args:
+    - --inventory=${ANSIBLE_INVENTORY}
+    - --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE:-/etc/hostname}
   config_options:
     defaults:
       callback_whitelist: profile_tasks
@@ -61,5 +66,9 @@ provisioner:
     hosts:
       molecule_hosts:
         vars:
+          ansible_user: root
+          netbackup_state: present
+          netbackup_download_dir: /tmp/netbackup_rpms
+          netbackup_install_rpms: no
 verifier:
   name: ansible

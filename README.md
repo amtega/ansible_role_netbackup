@@ -39,16 +39,20 @@ This is an example playbook:
 Tests are based on [molecule with docker containers](https://molecule.readthedocs.io/en/latest/installation.html).
 
 The tests doesn't install the netbackup packages to avoid registering into servers testing machines.
+To run test you need provide the variables defined in `defaults/main.yml`. One way to provide this information is calling the testing playbook passing an additional inventory using the following environment variables:
+
+- `ANSIBLE_INVENTORY`: path to an inventory
+- `ANSIBLE_VAULT_PASSWORD_FILE`: path to the file containing the vault password required for the previous inventory
 
 ```shell
 cd amtega.netbackup
 
-molecule test
+ANSIBLE_INVENTORY=~/myinventory ANSIBLE_VAULT_PASSWORD_FILE=~/myvaultpassword molecule test --all
 ```
 
 ## License
 
-Copyright (C) 2020 AMTEGA - Xunta de Galicia
+Copyright (C) 2022 AMTEGA - Xunta de Galicia
 
 This role is free software: you can redistribute it and/or modify it under the terms of:
 

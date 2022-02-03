@@ -14,6 +14,7 @@ lint: "${MOLECULE_SCENARIO_DIRECTORY}/linters.sh"
 platforms:
   - name: "centos7-${INSTANCE_UUID:-1}"
     image: quay.io/centos/centos:centos7
+    dockerfile: Dockerfile.systemd
     command: /sbin/init
     tmpfs:
       - /run
